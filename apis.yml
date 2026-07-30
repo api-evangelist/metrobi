@@ -1,25 +1,125 @@
 aid: metrobi
 name: Metrobi
-description: Metrobi is a company surfaced as a portfolio company of techstars and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Metrobi is a Boston-based local same-day delivery and courier platform for
+  businesses — bakeries, caterers, florists, coffee roasters, meal-prep and
+  wholesale food & beverage makers — covering the top 18 US metropolitan areas.
+  Its fulfillment platform handles delivery management, route optimization,
+  receiver notifications, live tracking and driver dispatch across a network of
+  contractor drivers, plus tools for teams running their own in-house drivers.
+  The Metrobi Delivery API lets platforms programmatically estimate, create,
+  read, list and cancel local deliveries and receive real-time status updates
+  via per-delivery webhooks.
 url: https://raw.githubusercontent.com/api-evangelist/metrobi/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://metrobi.com/wp-content/uploads/2023/06/website-thumbnail.jpg
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - techstars
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: profiled
+x-tier-reason: has-public-delivery-api
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-20'
 tags:
 - Company
-apis: []
+- Delivery
+- Logistics
+- Courier
+- Last Mile Delivery
+- Route Optimization
+- Fulfillment
+- Local Delivery
+- Webhooks
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: metrobi:metrobi-deliveries-api
+  name: Metrobi Deliveries API
+  description: Create, read, list, estimate and cancel local courier deliveries.
+  humanURL: https://metrobi.readme.io/reference/what-is-metrobi
+  baseURL: https://delivery-api.metrobi.com/api/
+  tags:
+  - Deliveries
+  properties:
+  - type: OpenAPI
+    url: openapi/metrobi-deliveries-api-openapi.yml
+  - type: Documentation
+    url: https://metrobi.readme.io/
+  - type: APIReference
+    url: https://metrobi.readme.io/reference/what-is-metrobi
 common:
+- type: DeveloperPortal
+  url: https://metrobi.com/integrations/delivery-api/
+- type: Documentation
+  url: https://metrobi.readme.io/
+- type: APIReference
+  url: https://metrobi.readme.io/reference/what-is-metrobi
+- type: GettingStarted
+  url: https://metrobi.readme.io/reference/authentication
+- type: SignUp
+  url: https://metrobi.com/register/
+- type: Login
+  url: https://deliver.metrobi.com/
+- type: Pricing
+  url: https://metrobi.com/pricing/
+- type: Support
+  url: https://metrobi.com/contact/
+- type: Blog
+  url: https://metrobi.com/blog/
+- type: TermsOfService
+  url: https://metrobi.com/terms-of-service/
+- type: PrivacyPolicy
+  url: https://metrobi.com/privacy-policy/
+- type: OpenAPI
+  url: openapi/metrobi-delivery-api-openapi.json
+- type: Overlay
+  url: overlays/metrobi-delivery-api-overlay.yaml
+- type: Authentication
+  url: authentication/metrobi-authentication.yml
+- type: Conventions
+  url: conventions/metrobi-conventions.yml
+- type: ErrorCatalog
+  url: errors/metrobi-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/metrobi-lifecycle.yml
+- type: Conformance
+  url: conformance/metrobi-conformance.yml
+- type: DataModel
+  url: data-model/metrobi-data-model.yml
+- type: Webhooks
+  url: asyncapi/metrobi-delivery-webhooks.yml
+- type: MCPServer
+  url: mcp/metrobi-mcp.yml
+- type: LLMsTxt
+  url: llms/metrobi-llms.txt
+- type: AgentSkill
+  url: skills/metrobi-book-local-delivery.md
+- type: AgentSkill
+  url: skills/metrobi-manage-deliveries.md
+- type: AgenticAccess
+  url: agentic-access/metrobi-agentic-access.yml
+- type: DomainSecurity
+  url: security/metrobi-domain-security.yml
 - type: Website
   url: https://metrobi.com/
+x-enrichment:
+  date: '2026-07-20'
+  status: enriched
+  artifacts_added: 17
+  pass: local-v1
