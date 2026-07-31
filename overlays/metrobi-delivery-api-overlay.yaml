@@ -1,0 +1,23 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Metrobi Delivery API
+  version: 1.0.0
+extends: openapi/metrobi-delivery-api-openapi.json
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-rating: 3
+      x-apievangelist-notes: >-
+        Spec reassembled verbatim from Metrobi's ReadMe-published per-operation
+        OpenAPI 3.1 fragments (metrobi.readme.io). Single apiKey header (x-api-key).
+        Custom (non-RFC9457) error envelope. Delivery events delivered via
+        per-delivery webhook_url rather than a published AsyncAPI.
+  - target: $.info
+    update:
+      x-artifacts:
+        authentication: authentication/metrobi-authentication.yml
+        conventions: conventions/metrobi-conventions.yml
+        errors: errors/metrobi-problem-types.yml
+        lifecycle: lifecycle/metrobi-lifecycle.yml
+        webhooks: asyncapi/metrobi-delivery-webhooks.yml
+        data_model: data-model/metrobi-data-model.yml

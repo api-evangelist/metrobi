@@ -1,0 +1,15 @@
+# Metrobi Delivery API Documentation
+
+> Documentation for Metrobi Delivery API
+
+## API Reference
+- [What is Metrobi?](https://metrobi.readme.io/reference/what-is-metrobi.md): Welcome to the Metrobi Delivery API documentation. This API allows you to create and manage deliveries seamlessly. The endpoints are designed to be easy to use and integrate with your existing systems.
+- [Authentication](https://metrobi.readme.io/reference/authentication.md)
+- [Delivery types](https://metrobi.readme.io/reference/cargo-sizes.md)
+- [Create a delivery](https://metrobi.readme.io/reference/create-a-delivery.md)
+- [Cancel a delivery](https://metrobi.readme.io/reference/cancel-a-delivery.md)
+- [Read a delivery](https://metrobi.readme.io/reference/get-a-delivery-status.md)
+- [List deliveries](https://metrobi.readme.io/reference/list-deliveries.md)
+- [Get delivery estimation](https://metrobi.readme.io/reference/delivery-estimation.md)
+- [Receive Real-Time Delivery Updates](https://metrobi.readme.io/reference/receiving-real-time-delivery-updates.md)
+- [Reading delivery data](https://metrobi.readme.io/reference/reading-data-from-each-delivery-event.md)

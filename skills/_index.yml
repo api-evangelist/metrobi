@@ -1,0 +1,12 @@
+generated: '2026-07-20'
+method: generated
+source: openapi/metrobi-delivery-api-openapi.json
+skills:
+  - file: metrobi-book-local-delivery.md
+    name: Book a local courier delivery with Metrobi
+    api: openapi/metrobi-delivery-api-openapi.json
+    operations: [delivery-estimation, create-a-delivery, get-a-delivery-status]
+  - file: metrobi-manage-deliveries.md
+    name: List, read, and cancel Metrobi deliveries
+    api: openapi/metrobi-delivery-api-openapi.json
+    operations: [list-deliveries, get-a-delivery-status, cancel-a-delivery]

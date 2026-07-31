@@ -1,0 +1,1636 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Metrobi Delivery API",
+    "version": "1.0",
+    "description": "The Metrobi Delivery API lets businesses create and manage local same-day courier deliveries: create a delivery, get a price/ETA estimate, read and list deliveries, cancel a delivery, and receive real-time status updates via webhooks. Metrobi is a local delivery courier service covering the top US metros.",
+    "contact": {
+      "name": "Metrobi",
+      "url": "https://metrobi.com/integrations/delivery-api/"
+    },
+    "x-logo": {
+      "url": "https://metrobi.com/wp-content/uploads/2024/07/api.webp"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://delivery-api.metrobi.com/api/"
+    }
+  ],
+  "security": [
+    {
+      "sec0": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Deliveries",
+      "description": "Create, read, list, estimate and cancel local courier deliveries."
+    }
+  ],
+  "paths": {
+    "/v1/delivery": {
+      "post": {
+        "summary": "Create a delivery",
+        "description": "",
+        "operationId": "create-a-delivery",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "cargo_size",
+                  "pickup_time",
+                  "pickup_stop",
+                  "dropoff_stop"
+                ],
+                "properties": {
+                  "cargo_size": {
+                    "type": "string",
+                    "description": "Vehicle size can be: \u201cextra_small\u201d, \u201cmedium\u201d, \u201clarge\u201d or \u201ccargo_van\u201d"
+                  },
+                  "job_description": {
+                    "type": "string",
+                    "description": "The description added to the delivery offer to incentivize drivers to take it"
+                  },
+                  "pickup_time": {
+                    "type": "object",
+                    "description": "object(PickupTimeRequest)",
+                    "required": [
+                      "date",
+                      "time"
+                    ],
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "description": "Pickup date in YYYY-MM-DD format"
+                      },
+                      "time": {
+                        "type": "string",
+                        "description": "Pickup time in HH:mm format"
+                      }
+                    }
+                  },
+                  "pickup_stop": {
+                    "type": "object",
+                    "description": "object(PickupStopRequest)",
+                    "required": [
+                      "name",
+                      "address"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the stop"
+                      },
+                      "address": {
+                        "type": "string",
+                        "description": "The complete address of the stop, formatted as \"Street, City, State ZIP Code, Country\""
+                      },
+                      "address2": {
+                        "type": "string",
+                        "description": "Additional address information such as Apt or Floor"
+                      },
+                      "lat": {
+                        "type": "number",
+                        "description": "Latitude coordinate of the stop. If not provided, we will geocode the address",
+                        "format": "float"
+                      },
+                      "lng": {
+                        "type": "number",
+                        "description": "Longitude coordinate of the stop. If not provided, we will geocode the address",
+                        "format": "float"
+                      },
+                      "instructions": {
+                        "type": "string",
+                        "description": "Instructions for the driver about how to navigate at this stop"
+                      },
+                      "business_name": {
+                        "type": "string",
+                        "description": "Business name if this is a business location"
+                      }
+                    }
+                  },
+                  "dropoff_stop": {
+                    "type": "object",
+                    "description": "object(stopRequest)",
+                    "required": [
+                      "name",
+                      "address"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the stop"
+                      },
+                      "address": {
+                        "type": "string",
+                        "description": "The complete address of the stop, formatted as \"Street, City, State ZIP Code, Country\"."
+                      },
+                      "address2": {
+                        "type": "string",
+                        "description": "Additional address information such as Apt # or Floor #"
+                      },
+                      "lat": {
+                        "type": "number",
+                        "description": "Latitude coordinate of the stop. If not provided, we will geocode the address",
+                        "format": "float"
+                      },
+                      "lng": {
+                        "type": "number",
+                        "description": "Longitude coordinate of the stop. If not provided, we will geocode the address",
+                        "format": "float"
+                      },
+                      "instructions": {
+                        "type": "string",
+                        "description": "Instructions for the driver about how to navigate at this stop"
+                      },
+                      "business_name": {
+                        "type": "string",
+                        "description": "Business name if this is a business location"
+                      },
+                      "contact": {
+                        "type": "object",
+                        "properties": {
+                          "phone": {
+                            "type": "string",
+                            "description": "Phone number of the receiver. Will be used for delivery status notifications. Non-numeric characters will be automatically ignored. Maximum of 11 numeric characters."
+                          },
+                          "email": {
+                            "type": "string",
+                            "description": "Email of the receiver. Will be used for delivery status notifications"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "settings": {
+                    "type": "object",
+                    "description": "object(Settings)",
+                    "properties": {
+                      "merge_delivery": {
+                        "type": "boolean",
+                        "description": "Should this delivery be merged with a compatible existing delivery (nearby pickup time, compatible pickup stop, not yet started)? The maximum number of stops that can be merged into a single delivery is 50.",
+                        "default": false
+                      },
+                      "return_to_pickup": {
+                        "type": "boolean",
+                        "description": "If the driver is required to return to pick-up after completing the delivery.",
+                        "default": false
+                      },
+                      "merge_delivery_settings": {
+                        "type": "object",
+                        "properties": {
+                          "maximum_number_of_stops": {
+                            "type": "integer",
+                            "description": "The maximum number of stops that can be merged into this delivery",
+                            "format": "int32"
+                          }
+                        }
+                      },
+                      "self_managed": {
+                        "type": "boolean",
+                        "description": "This delivery will be created as a self-managed delivery. That means the delivery will only be available to your own drivers, and not to drivers from the Metrobi Network",
+                        "default": false
+                      }
+                    }
+                  },
+                  "webhook_url": {
+                    "type": "string",
+                    "description": "url used for you to receive status updates related to the created delivery"
+                  }
+                }
+              },
+              "examples": {
+                "Request Example": {
+                  "value": {
+                    "cargo_size": "medium",
+                    "job_description": "Delivering small items",
+                    "pickup_time": {
+                      "date": "2026-06-01",
+                      "time": "10:00"
+                    },
+                    "pickup_stop": {
+                      "name": "Metrobi",
+                      "address": "55 Court Street Boston MA 02108",
+                      "address2": "Floor 2",
+                      "lat": 42.357142,
+                      "lng": -71.057592,
+                      "instructions": "Walk through the front door",
+                      "business_name": "Metrobi Inc"
+                    },
+                    "dropoff_stop": {
+                      "name": "John",
+                      "address": "3 Cambridge Street Somerville, MA 02144",
+                      "address2": "Apt 1",
+                      "instructions": "ring the bell",
+                      "lat": 42.4045,
+                      "lng": -71.12882,
+                      "contact": {
+                        "phone": "5551234568",
+                        "email": "example@email.com"
+                      }
+                    },
+                    "settings": {
+                      "merge_delivery_settings": {
+                        "maximum_number_of_stops": 10
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\t\"success\": true,\n\t\"response\": {\n\t\t\"message\": \"Delivery has been created\",\n\t\t\"data\": {\n\t\t\t\"delivery_id\": \"eadfa3d5-8a5c-4b1b-9a1b-45eaa13c5224\",\n\t\t\t\"size\": \"suv\",\n\t\t\t\"price\": 18.0,\n\t\t\t\"distance_estimate\": 8.144309696999999,\n\t\t\t\"job_description\": \"Delivering small items\",\n\t\t\t\"cancellation\": null,\n\t\t\t\"pickup_time\": {\n\t\t\t\t\"date\": \"2024-06-07\",\n\t\t\t\t\"time\": \"23:15\",\n\t\t\t\t\"latest_date\": \"2024-06-07\",\n\t\t\t\t\"latest_time\": \"23:30\"\n\t\t\t},\n\t\t\t\"pickup_stop\": {\n\t\t\t\t\"id\": \"b06e579e-2c56-4f5e-b8db-97dc4e252c30\",\n\t\t\t\t\"name\": \"Metrobi\",\n\t\t\t\t\"address\": \"55 Court Street Boston MA 02108\",\n\t\t\t\t\"lat\": 42.357142,\n\t\t\t\t\"lng\": -71.057592,\n\t\t\t\t\"address2\": \"Floor 2\",\n\t\t\t\t\"instructions\": \"Walk through the front door\",\n\t\t\t\t\"business_name\": \"Metrobi Inc\",\n\t\t\t\t\"completed_at\": null,\n\t\t\t\t\"status\": \"SUBMITTED\",\n\t\t\t\t\"type\": \"PICKUP\"\n\t\t\t},\n\t\t\t\"dropoff_stop\": {\n\t\t\t\t\"id\": \"eadfa3d5-8a5c-4b1b-9a1b-45eaa13c5224\",\n\t\t\t\t\"name\": \"Ozan\",\n\t\t\t\t\"address\": \"3 Cambridge Street Somerville, MA 02144\",\n\t\t\t\t\"lat\": 42.4045,\n\t\t\t\t\"lng\": -71.12882,\n\t\t\t\t\"address2\": \"Apt 1\",\n\t\t\t\t\"instructions\": \"ring the bell\",\n\t\t\t\t\"business_name\": null,\n\t\t\t\t\"contact\": {\n\t\t\t\t\t\"phone\": null,\n\t\t\t\t\t\"email\": null\n\t\t\t\t},\n\t\t\t\t\"completed_at\": null,\n\t\t\t\t\"status\": \"SUBMITTED\",\n\t\t\t\t\"type\": \"DROPOFF\"\n\t\t\t},\n\t\t\t\"driver\": null,\n\t\t\t\"settings\": {\n\t\t\t\t\"merge_delivery\": false,\n\t\t\t\t\"return_to_pickup\": false\n\t\t\t},\n\t\t\t\"created_at\": null,\n\t\t\t\"updated_at\": null,\n\t\t\t\"all_stops\": [\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"b06e579e-2c56-4f5e-b8db-97dc4e252c30\",\n\t\t\t\t\t\"name\": \"Metrobi\",\n\t\t\t\t\t\"address\": \"55 Court Street Boston MA 02108\",\n\t\t\t\t\t\"lat\": 42.357142,\n\t\t\t\t\t\"lng\": -71.057592,\n\t\t\t\t\t\"address2\": \"Floor 2\",\n\t\t\t\t\t\"instructions\": \"Walk through the front door\",\n\t\t\t\t\t\"business_name\": \"Metrobi Inc\",\n\t\t\t\t\t\"contact\": {\n\t\t\t\t\t\t\"phone\": null,\n\t\t\t\t\t\t\"email\": null\n\t\t\t\t\t},\n\t\t\t\t\t\"completed_at\": null,\n\t\t\t\t\t\"status\": \"SUBMITTED\",\n\t\t\t\t\t\"type\": \"PICKUP\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"eadfa3d5-8a5c-4b1b-9a1b-45eaa13c5224\",\n\t\t\t\t\t\"name\": \"Ozan\",\n\t\t\t\t\t\"address\": \"3 Cambridge Street Somerville, MA 02144\",\n\t\t\t\t\t\"lat\": 42.4045,\n\t\t\t\t\t\"lng\": -71.12882,\n\t\t\t\t\t\"address2\": \"Apt 1\",\n\t\t\t\t\t\"instructions\": \"ring the bell\",\n\t\t\t\t\t\"business_name\": null,\n\t\t\t\t\t\"contact\": {\n\t\t\t\t\t\t\"phone\": null,\n\t\t\t\t\t\t\"email\": null\n\t\t\t\t\t},\n\t\t\t\t\t\"completed_at\": null,\n\t\t\t\t\t\"status\": \"SUBMITTED\",\n\t\t\t\t\t\"type\": \"DROPOFF\"\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t}\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    },
+                    "response": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Delivery has been created"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "delivery_id": {
+                              "type": "string",
+                              "example": "eadfa3d5-8a5c-4b1b-9a1b-45eaa13c5224"
+                            },
+                            "size": {
+                              "type": "string",
+                              "example": "suv"
+                            },
+                            "price": {
+                              "type": "integer",
+                              "example": 18,
+                              "default": 0
+                            },
+                            "distance_estimate": {
+                              "type": "number",
+                              "example": 8.144309696999999,
+                              "default": 0
+                            },
+                            "job_description": {
+                              "type": "string",
+                              "example": "Delivering small items"
+                            },
+                            "cancellation": {},
+                            "pickup_time": {
+                              "type": "object",
+                              "properties": {
+                                "date": {
+                                  "type": "string",
+                                  "example": "2024-06-07"
+                                },
+                                "time": {
+                                  "type": "string",
+                                  "example": "23:15"
+                                },
+                                "latest_date": {
+                                  "type": "string",
+                                  "example": "2024-06-07"
+                                },
+                                "latest_time": {
+                                  "type": "string",
+                                  "example": "23:30"
+                                }
+                              }
+                            },
+                            "pickup_stop": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "example": "b06e579e-2c56-4f5e-b8db-97dc4e252c30"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "Metrobi"
+                                },
+                                "address": {
+                                  "type": "string",
+                                  "example": "55 Court Street Boston MA 02108"
+                                },
+                                "lat": {
+                                  "type": "number",
+                                  "example": 42.357142,
+                                  "default": 0
+                                },
+                                "lng": {
+                                  "type": "number",
+                                  "example": -71.057592,
+                                  "default": 0
+                                },
+                                "address2": {
+                                  "type": "string",
+                                  "example": "Floor 2"
+                                },
+                                "instructions": {
+                                  "type": "string",
+                                  "example": "Walk through the front door"
+                                },
+                                "business_name": {
+                                  "type": "string",
+                                  "example": "Metrobi Inc"
+                                },
+                                "completed_at": {},
+                                "status": {
+                                  "type": "string",
+                                  "example": "SUBMITTED"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "example": "PICKUP"
+                                }
+                              }
+                            },
+                            "dropoff_stop": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "example": "eadfa3d5-8a5c-4b1b-9a1b-45eaa13c5224"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "Ozan"
+                                },
+                                "address": {
+                                  "type": "string",
+                                  "example": "3 Cambridge Street Somerville, MA 02144"
+                                },
+                                "lat": {
+                                  "type": "number",
+                                  "example": 42.4045,
+                                  "default": 0
+                                },
+                                "lng": {
+                                  "type": "number",
+                                  "example": -71.12882,
+                                  "default": 0
+                                },
+                                "address2": {
+                                  "type": "string",
+                                  "example": "Apt 1"
+                                },
+                                "instructions": {
+                                  "type": "string",
+                                  "example": "ring the bell"
+                                },
+                                "business_name": {},
+                                "contact": {
+                                  "type": "object",
+                                  "properties": {
+                                    "phone": {},
+                                    "email": {}
+                                  }
+                                },
+                                "completed_at": {},
+                                "status": {
+                                  "type": "string",
+                                  "example": "SUBMITTED"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "example": "DROPOFF"
+                                }
+                              }
+                            },
+                            "driver": {},
+                            "settings": {
+                              "type": "object",
+                              "properties": {
+                                "merge_delivery": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "default": true
+                                },
+                                "return_to_pickup": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "default": true
+                                }
+                              }
+                            },
+                            "created_at": {},
+                            "updated_at": {},
+                            "all_stops": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "example": "b06e579e-2c56-4f5e-b8db-97dc4e252c30"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "Metrobi"
+                                  },
+                                  "address": {
+                                    "type": "string",
+                                    "example": "55 Court Street Boston MA 02108"
+                                  },
+                                  "lat": {
+                                    "type": "number",
+                                    "example": 42.357142,
+                                    "default": 0
+                                  },
+                                  "lng": {
+                                    "type": "number",
+                                    "example": -71.057592,
+                                    "default": 0
+                                  },
+                                  "address2": {
+                                    "type": "string",
+                                    "example": "Floor 2"
+                                  },
+                                  "instructions": {
+                                    "type": "string",
+                                    "example": "Walk through the front door"
+                                  },
+                                  "business_name": {
+                                    "type": "string",
+                                    "example": "Metrobi Inc"
+                                  },
+                                  "contact": {
+                                    "type": "object",
+                                    "properties": {
+                                      "phone": {},
+                                      "email": {}
+                                    }
+                                  },
+                                  "completed_at": {},
+                                  "status": {
+                                    "type": "string",
+                                    "example": "SUBMITTED"
+                                  },
+                                  "type": {
+                                    "type": "string",
+                                    "example": "PICKUP"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\t\"response\": {\n\t\t\"message\": \"Failed when parsing body as json Error ID: None\"\n\t},\n\t\"success\": false\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Failed when parsing body as json Error ID: None"
+                        }
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "tags": [
+          "Deliveries"
+        ]
+      },
+      "get": {
+        "summary": "List deliveries",
+        "description": "",
+        "operationId": "list-deliveries",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "The starting date of the range (inclusive). This parameter filters deliveries to include only those with a pickup time on or after the specified date. Format: YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "The ending date of the range (inclusive). This parameter filters deliveries to include only those with a pickup time on or before the specified date. Format: YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"message\": \"Delivery has been fetched\",\n  \"data\": [\n    {\n      \"delivery_id\": \"\",\n      \"size\": \"suv\",\n      \"price\": 0,\n      \"price_with_credit\": 16.65,\n      \"distance_estimate\": 9.026656517,\n      \"job_description\": null,\n      \"cancellation\": null,\n      \"pickup_time\": {\n        \"date\": \"2026-04-09\",\n        \"time\": \"11:15\",\n        \"latest_date\": \"2026-04-09\",\n        \"latest_time\": \"11:30\"\n      },\n      \"pickup_stop\": {\n        \"id\": \"\",\n        \"name\": \"Metrobi\",\n        \"address\": \"55 Court Street Boston MA 02108\",\n        \"tracking_code\": \"\",\n        \"lat\": 42.359308,\n        \"lng\": -71.058981,\n        \"address2\": null,\n        \"instructions\": null,\n        \"business_name\": null,\n        \"contact\": {\n          \"phone\": null,\n          \"email\": \"example@email.com\"\n        },\n        \"completed_at\": null,\n        \"status\": \"TODO\",\n        \"type\": \"PICKUP\",\n        \"pods\": [],\n        \"order_ids\": null,\n        \"estimated_arrival_time\": 1775747700000,\n        \"actual_arrival_time\": null,\n        \"deliver_after\": null,\n        \"deliver_before\": null,\n        \"tracking\": {\n          \"code\": null,\n          \"link\": \"https://deliver.metrobi.com...\"\n        },\n        \"webhook_url\": null,\n        \"price\": null,\n        \"price_with_credit\": null,\n        \"create_source\": \"DEFAULT\"\n      },\n      \"dropoff_stop\": null,\n      \"driver\": null,\n      \"settings\": {\n        \"merge_delivery\": false,\n        \"return_to_pickup\": false\n      },\n      \"created_at\": 1775090865849,\n      \"updated_at\": 1775090870522,\n      \"all_stops\": [\n        {\n          \"id\": \"\",\n          \"name\": \"Metrobi\",\n          \"address\": \"55 Court Street Boston MA 02108\",\n          \"tracking_code\": \"\",\n          \"lat\": 42.359308,\n          \"lng\": -71.058981,\n          \"address2\": null,\n          \"instructions\": null,\n          \"business_name\": null,\n          \"contact\": {\n            \"phone\": null,\n            \"email\": \"example@email.com\"\n          },\n          \"completed_at\": null,\n          \"status\": \"TODO\",\n          \"type\": \"PICKUP\",\n          \"pods\": [],\n          \"order_ids\": null,\n          \"estimated_arrival_time\": 1775747700000,\n          \"actual_arrival_time\": null,\n          \"deliver_after\": null,\n          \"deliver_before\": null,\n          \"tracking\": {\n            \"code\": null,\n            \"link\": null\n          },\n          \"webhook_url\": null,\n          \"price\": null,\n          \"price_with_credit\": null,\n          \"create_source\": \"DEFAULT\"\n        },\n        {\n          \"id\": \"\",\n          \"name\": \"John\",\n          \"address\": \"3 Cambridge Street Somerville, MA 02144\",\n          \"tracking_code\": \"\",\n          \"lat\": 42.4353033,\n          \"lng\": -71.1544177,\n          \"address2\": \"\",\n          \"instructions\": null,\n          \"business_name\": \"\",\n          \"contact\": {\n            \"phone\": \"+15551234567\",\n            \"email\": \"example2@email.com\"\n          },\n          \"completed_at\": null,\n          \"status\": \"TODO\",\n          \"type\": \"DROPOFF\",\n          \"pods\": [],\n          \"order_ids\": [],\n          \"estimated_arrival_time\": 1775749907000,\n          \"actual_arrival_time\": null,\n          \"deliver_after\": \"\",\n          \"deliver_before\": \"\",\n          \"tracking\": {\n            \"code\": null,\n            \"link\": \"https://deliver.metrobi.com...\"\n          },\n          \"webhook_url\": null,\n          \"price\": 21.86,\n          \"price_with_credit\": 38.51,\n          \"create_source\": \"DEFAULT\"\n        }\n      ]\n    }\n  ]\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Delivery has been fetched"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "delivery_id": {
+                            "type": "string",
+                            "example": ""
+                          },
+                          "size": {
+                            "type": "string",
+                            "example": "suv"
+                          },
+                          "price": {
+                            "type": "integer",
+                            "example": 0,
+                            "default": 0
+                          },
+                          "price_with_credit": {
+                            "type": "number",
+                            "example": 16.65,
+                            "default": 0
+                          },
+                          "distance_estimate": {
+                            "type": "number",
+                            "example": 9.026656517,
+                            "default": 0
+                          },
+                          "job_description": {},
+                          "cancellation": {},
+                          "pickup_time": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "example": "2026-04-09"
+                              },
+                              "time": {
+                                "type": "string",
+                                "example": "11:15"
+                              },
+                              "latest_date": {
+                                "type": "string",
+                                "example": "2026-04-09"
+                              },
+                              "latest_time": {
+                                "type": "string",
+                                "example": "11:30"
+                              }
+                            }
+                          },
+                          "pickup_stop": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": ""
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Metrobi"
+                              },
+                              "address": {
+                                "type": "string",
+                                "example": "55 Court Street Boston MA 02108"
+                              },
+                              "tracking_code": {
+                                "type": "string",
+                                "example": ""
+                              },
+                              "lat": {
+                                "type": "number",
+                                "example": 42.359308,
+                                "default": 0
+                              },
+                              "lng": {
+                                "type": "number",
+                                "example": -71.058981,
+                                "default": 0
+                              },
+                              "address2": {},
+                              "instructions": {},
+                              "business_name": {},
+                              "contact": {
+                                "type": "object",
+                                "properties": {
+                                  "phone": {},
+                                  "email": {
+                                    "type": "string",
+                                    "example": "example@email.com"
+                                  }
+                                }
+                              },
+                              "completed_at": {},
+                              "status": {
+                                "type": "string",
+                                "example": "TODO"
+                              },
+                              "type": {
+                                "type": "string",
+                                "example": "PICKUP"
+                              },
+                              "pods": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {}
+                                }
+                              },
+                              "order_ids": {},
+                              "estimated_arrival_time": {
+                                "type": "integer",
+                                "example": 1775747700000,
+                                "default": 0
+                              },
+                              "actual_arrival_time": {},
+                              "deliver_after": {},
+                              "deliver_before": {},
+                              "tracking": {
+                                "type": "object",
+                                "properties": {
+                                  "code": {},
+                                  "link": {
+                                    "type": "string",
+                                    "example": "https://deliver.metrobi.com..."
+                                  }
+                                }
+                              },
+                              "webhook_url": {},
+                              "price": {},
+                              "price_with_credit": {},
+                              "create_source": {
+                                "type": "string",
+                                "example": "DEFAULT"
+                              }
+                            }
+                          },
+                          "dropoff_stop": {},
+                          "driver": {},
+                          "settings": {
+                            "type": "object",
+                            "properties": {
+                              "merge_delivery": {
+                                "type": "boolean",
+                                "example": false,
+                                "default": true
+                              },
+                              "return_to_pickup": {
+                                "type": "boolean",
+                                "example": false,
+                                "default": true
+                              }
+                            }
+                          },
+                          "created_at": {
+                            "type": "integer",
+                            "example": 1775090865849,
+                            "default": 0
+                          },
+                          "updated_at": {
+                            "type": "integer",
+                            "example": 1775090870522,
+                            "default": 0
+                          },
+                          "all_stops": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "example": ""
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "Metrobi"
+                                },
+                                "address": {
+                                  "type": "string",
+                                  "example": "55 Court Street Boston MA 02108"
+                                },
+                                "tracking_code": {
+                                  "type": "string",
+                                  "example": ""
+                                },
+                                "lat": {
+                                  "type": "number",
+                                  "example": 42.359308,
+                                  "default": 0
+                                },
+                                "lng": {
+                                  "type": "number",
+                                  "example": -71.058981,
+                                  "default": 0
+                                },
+                                "address2": {},
+                                "instructions": {},
+                                "business_name": {},
+                                "contact": {
+                                  "type": "object",
+                                  "properties": {
+                                    "phone": {},
+                                    "email": {
+                                      "type": "string",
+                                      "example": "example@email.com"
+                                    }
+                                  }
+                                },
+                                "completed_at": {},
+                                "status": {
+                                  "type": "string",
+                                  "example": "TODO"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "example": "PICKUP"
+                                },
+                                "pods": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {}
+                                  }
+                                },
+                                "order_ids": {},
+                                "estimated_arrival_time": {
+                                  "type": "integer",
+                                  "example": 1775747700000,
+                                  "default": 0
+                                },
+                                "actual_arrival_time": {},
+                                "deliver_after": {},
+                                "deliver_before": {},
+                                "tracking": {
+                                  "type": "object",
+                                  "properties": {
+                                    "code": {},
+                                    "link": {}
+                                  }
+                                },
+                                "webhook_url": {},
+                                "price": {},
+                                "price_with_credit": {},
+                                "create_source": {
+                                  "type": "string",
+                                  "example": "DEFAULT"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"response\": {\n    \"message\": \"Missing arguments\"\n  }\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "response": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Missing arguments"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {},
+              "examples": {
+                "Request Example": {
+                  "value": {
+                    "fromDate": "2024-08-29",
+                    "toDate": "2024-09-14"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Deliveries"
+        ]
+      }
+    },
+    "/v1/delivery/{delivery_id}": {
+      "get": {
+        "summary": "Read a delivery",
+        "description": "",
+        "operationId": "get-a-delivery-status",
+        "parameters": [
+          {
+            "name": "delivery_id",
+            "in": "path",
+            "description": "The ID of the delivery to be read",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": true,\n    \"response\": {\n        \"message\":\u201dSuccessful\u201d,\n        \"data\": ResponseData\n    }\n}\n"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {},
+              "examples": {
+                "Request Example": {
+                  "value": {}
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Deliveries"
+        ]
+      },
+      "delete": {
+        "summary": "Cancel a delivery",
+        "description": "",
+        "operationId": "cancel-a-delivery",
+        "parameters": [
+          {
+            "name": "delivery_id",
+            "in": "path",
+            "description": "The ID of the delivery to be canceled",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "description": "Reason for the cancellation"
+                  }
+                }
+              },
+              "examples": {
+                "Request Example": {
+                  "value": {
+                    "reason": "Delivery no longer needed"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": true,\n  \"response\": {\n    \"message\": \"Delivery has been cancelled\",\n    \"data\": {\n      \"delivery_id\": \"\",\n      \"size\": \"suv\",\n      \"price\": 0,\n      \"price_with_credit\": 16.65,\n      \"distance_estimate\": 9.026656517,\n      \"job_description\": null,\n      \"cancellation\": {\n        \"reason\": \"aaaa\",\n        \"fee\": 0\n      },\n      \"pickup_time\": {\n        \"date\": \"2026-04-01\",\n        \"time\": \"21:15\",\n        \"latest_date\": \"2026-04-01\",\n        \"latest_time\": \"21:30\"\n      },\n      \"pickup_stop\": {\n        \"id\": \"\"\n        \"name\": \"Metrobi\",\n        \"address\": \"55 Court Street Boston MA 02108\",\n        \"tracking_code\": \"\",\n        \"lat\": 42.359308,\n        \"lng\": -71.058981,\n        \"address2\": null,\n        \"instructions\": null,\n        \"business_name\": null,\n        \"contact\": {\n          \"phone\": null,\n          \"email\": \"example@email.com\"\n        },\n        \"completed_at\": null,\n        \"status\": \"CANCELLED\",\n        \"type\": \"PICKUP\",\n        \"pods\": [],\n        \"order_ids\": [],\n        \"estimated_arrival_time\": 1775092500000,\n        \"actual_arrival_time\": null,\n        \"deliver_after\": null,\n        \"deliver_before\": null,\n        \"tracking\": {\n          \"code\": null,\n          \"link\": \"https://deliver.metrobi.com...\n        },\n        \"webhook_url\": null,\n        \"price\": null,\n        \"price_with_credit\": null,\n        \"create_source\": \"DEFAULT\"\n      },\n      \"dropoff_stop\": {\n        \"id\": \"\",\n        \"name\": \"John\",\n        \"address\": \"3 Cambridge Street Somerville, MA 02144\",\n        \"tracking_code\": \"\",\n        \"lat\": 42.4353033,\n        \"lng\": -71.1544177,\n        \"address2\": \"\",\n        \"instructions\": null,\n        \"business_name\": \"\",\n        \"contact\": {\n          \"phone\": \"+15551234567\",\n          \"email\": \"example2@email.com\"\n        },\n        \"completed_at\": null,\n        \"status\": \"CANCELLED\",\n        \"type\": \"DROPOFF\",\n        \"pods\": [],\n        \"order_ids\": [],\n        \"estimated_arrival_time\": 1775094707000,\n        \"actual_arrival_time\": null,\n        \"deliver_after\": \"\",\n        \"deliver_before\": \"\",\n        \"tracking\": {\n          \"code\": null,\n          \"link\": \"https://deliver.metrobi.com...\"\n        },\n        \"webhook_url\": null,\n        \"price\": 0,\n        \"price_with_credit\": 16.65,\n        \"create_source\": \"DEFAULT\"\n      },\n      \"driver\": null,\n      \"settings\": {\n        \"merge_delivery\": false,\n        \"return_to_pickup\": false\n      },\n      \"created_at\": 1775092081236,\n      \"updated_at\": 1775092085843,\n      \"all_stops\": [\n        {\n          \"id\": \"\",\n          \"name\": \"Metrobi\",\n          \"address\": \"55 Court Street Boston MA 02108\",\n          \"tracking_code\": \"\",\n          \"lat\": 42.359308,\n          \"lng\": -71.058981,\n          \"address2\": null,\n          \"instructions\": null,\n          \"business_name\": null,\n          \"contact\": {\n            \"phone\": null,\n            \"email\": \"example@email.com\"\n          },\n          \"completed_at\": null,\n          \"status\": \"CANCELLED\",\n          \"type\": \"PICKUP\",\n          \"pods\": [],\n          \"order_ids\": [],\n          \"estimated_arrival_time\": 1775092500000,\n          \"actual_arrival_time\": null,\n          \"deliver_after\": null,\n          \"deliver_before\": null,\n          \"tracking\": {\n            \"code\": null,\n            \"link\": \"https://deliver.metrobi.com...\n          },\n          \"webhook_url\": null,\n          \"price\": null,\n          \"price_with_credit\": null,\n          \"create_source\": \"DEFAULT\"\n        },\n        {\n          \"id\": \"\",\n          \"name\": \"John\",\n          \"address\": \"3 Cambridge Street Somerville, MA 02144\",\n          \"tracking_code\": \"\",\n          \"lat\": 42.4353033,\n          \"lng\": -71.1544177,\n          \"address2\": \"\",\n          \"instructions\": null,\n          \"business_name\": \"\",\n          \"contact\": {\n            \"phone\": \"+15551234567\",\n            \"email\": \"example2@email.com\"\n          },\n          \"completed_at\": null,\n          \"status\": \"CANCELLED\",\n          \"type\": \"DROPOFF\",\n          \"pods\": [],\n          \"order_ids\": [],\n          \"estimated_arrival_time\": 1775094707000,\n          \"actual_arrival_time\": null,\n          \"deliver_after\": \"\",\n          \"deliver_before\": \"\",\n          \"tracking\": {\n            \"code\": null,\n            \"link\": \"https://deliver.metrobi.com...\n          },\n          \"webhook_url\": null,\n          \"price\": 0,\n          \"price_with_credit\": 16.65,\n          \"create_source\": \"DEFAULT\"\n        }\n      ]\n    }\n  }\n}\n"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"response\": {\n    \"message\": \"Delivery not found\",\n    \"errorId\": null\n  },\n  \"success\": false\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Delivery not found"
+                        },
+                        "errorId": {}
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "tags": [
+          "Deliveries"
+        ]
+      }
+    },
+    "/v1/delivery_estimate": {
+      "post": {
+        "summary": "Get delivery estimation",
+        "description": "",
+        "operationId": "delivery-estimation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "pickup_time",
+                  "pickup_stop",
+                  "dropoff_stop"
+                ],
+                "properties": {
+                  "cargo_size": {
+                    "type": "string",
+                    "description": "Vehicle size can be: \u201cextra_small\u201d, \u201cmedium\u201d, \u201clarge\u201d or \u201ccargo_van\u201d"
+                  },
+                  "pickup_time": {
+                    "type": "object",
+                    "required": [
+                      "date",
+                      "time"
+                    ],
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "description": "Pickup date in YYYY-MM-DD format"
+                      },
+                      "time": {
+                        "type": "string",
+                        "description": "Pickup time in HH:mm format"
+                      }
+                    }
+                  },
+                  "pickup_stop": {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "address"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the stop"
+                      },
+                      "address": {
+                        "type": "string",
+                        "description": "The complete address of the stop, formatted as \"Street, City, State ZIP Code, Country\""
+                      },
+                      "address2": {
+                        "type": "string",
+                        "description": "Additional address information such as Apt or Floor"
+                      },
+                      "lat": {
+                        "type": "number",
+                        "description": "Latitude coordinate of the stop. If not provided, we will geocode the address",
+                        "format": "float"
+                      },
+                      "lng": {
+                        "type": "number",
+                        "description": "Longitude coordinate of the stop. If not provided, we will geocode the address",
+                        "format": "float"
+                      },
+                      "instructions": {
+                        "type": "string",
+                        "description": "Instructions for the driver about how to navigate at this stop"
+                      },
+                      "business_name": {
+                        "type": "string",
+                        "description": "Business name if this is a business location"
+                      }
+                    }
+                  },
+                  "dropoff_stop": {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "address"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the stop"
+                      },
+                      "address": {
+                        "type": "string",
+                        "description": "The complete address of the stop, formatted as \"Street, City, State ZIP Code, Country\"."
+                      },
+                      "address2": {
+                        "type": "string",
+                        "description": "Additional address information such as Apt # or Floor #"
+                      },
+                      "lat": {
+                        "type": "number",
+                        "description": "Latitude coordinate of the stop. If not provided, we will geocode the address",
+                        "format": "float"
+                      },
+                      "lng": {
+                        "type": "number",
+                        "description": "Longitude coordinate of the stop. If not provided, we will geocode the address",
+                        "format": "float"
+                      },
+                      "instructions": {
+                        "type": "string",
+                        "description": "Instructions for the driver about how to navigate at this stop"
+                      },
+                      "business_name": {
+                        "type": "string",
+                        "description": "Business name if this is a business location"
+                      },
+                      "contact": {
+                        "type": "object",
+                        "properties": {
+                          "phone": {
+                            "type": "string",
+                            "description": "Phone number of the receiver. Will be used for delivery status notifications. Non-numeric characters will be automatically ignored. Maximum of 11 numeric characters."
+                          },
+                          "email": {
+                            "type": "string",
+                            "description": "Email of the receiver. Will be used for delivery status notifications"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "settings": {
+                    "type": "object",
+                    "properties": {
+                      "merge_delivery": {
+                        "type": "boolean",
+                        "description": "Should this delivery be merged with a compatible existing delivery (nearby pickup time, compatible pickup stop, not yet started)? The maximum number of stops that can be merged into a single delivery is 50.",
+                        "default": false
+                      },
+                      "return_to_pickup": {
+                        "type": "boolean",
+                        "description": "If the driver is required to return to pick-up after completing the delivery.",
+                        "default": false
+                      },
+                      "merge_delivery_settings": {
+                        "type": "object",
+                        "properties": {
+                          "maximum_number_of_stops": {
+                            "type": "integer",
+                            "description": "The maximum number of stops that can be merged into this delivery",
+                            "format": "int32"
+                          }
+                        }
+                      },
+                      "self_managed": {
+                        "type": "boolean",
+                        "description": "This delivery will be created as a self-managed delivery. That means the delivery will only be available to your own drivers, and not to drivers from the Metrobi Network",
+                        "default": false
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "Request Example": {
+                  "value": {
+                    "cargo_size": "medium",
+                    "pickup_time": {
+                      "date": "2026-06-01",
+                      "time": "10:00"
+                    },
+                    "pickup_stop": {
+                      "name": "Metrobi",
+                      "address": "55 Court Street Boston MA 02108",
+                      "address2": "Floor 2",
+                      "lat": 42.357142,
+                      "lng": -71.057592,
+                      "instructions": "Walk through the front door",
+                      "business_name": "Metrobi Inc"
+                    },
+                    "dropoff_stop": {
+                      "name": "John",
+                      "address": "3 Cambridge Street Somerville, MA 02144",
+                      "address2": "Apt 1",
+                      "instructions": "ring the bell",
+                      "lat": 42.4045,
+                      "lng": -71.12882,
+                      "contact": {
+                        "phone": "5551234567",
+                        "email": "example@email.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": true,\n  \"response\": {\n    \"message\": \"Delivery estimation created\",\n    \"data\": {\n      \"delivery_id\": null,\n      \"size\": \"suv\",\n      \"price\": 21.86,\n      \"price_with_credit\": 38.51,\n      \"distance_estimate\": 9.026656517,\n      \"job_description\": null,\n      \"cancellation\": null,\n      \"pickup_time\": {\n        \"date\": \"2026-06-01\",\n        \"time\": \"10:00\",\n        \"latest_date\": \"2026-06-01\",\n        \"latest_time\": \"12:00\"\n      },\n      \"pickup_stop\": {\n        \"id\": null,\n        \"name\": \"Metrobi\",\n        \"address\": \"55 Court Street Boston MA 02108\",\n        \"tracking_code\": \"SZYLBHFF8JMA\",\n        \"lat\": 42.359308,\n        \"lng\": -71.058981,\n        \"address2\": null,\n        \"instructions\": null,\n        \"business_name\": null,\n        \"completed_at\": null,\n        \"status\": \"SUBMITTED\",\n        \"type\": \"PICKUP\",\n        \"pods\": [],\n        \"order_ids\": null,\n        \"estimated_arrival_time\": 1780329600000,\n        \"actual_arrival_time\": null,\n        \"deliver_after\": null,\n        \"deliver_before\": null,\n        \"tracking\": {\n          \"code\": null,\n          \"link\": \"https://deliver.metrobi.com/r/SZYLBHFF8JMA\"\n        },\n        \"webhook_url\": null,\n        \"price\": null,\n        \"price_with_credit\": null,\n        \"create_source\": \"DEFAULT\"\n      },\n      \"dropoff_stop\": {\n        \"id\": null,\n        \"name\": \"John\",\n        \"address\": \"3 Cambridge Street Somerville, MA 02144\",\n        \"tracking_code\": \"Y4VKH70JSKAS\",\n        \"lat\": 42.4353033,\n        \"lng\": -71.1544177,\n        \"address2\": null,\n        \"instructions\": null,\n        \"business_name\": null,\n        \"contact\": {\n          \"phone\": \"+15551234567\",\n          \"email\": \"example2@email.com\"\n        },\n        \"completed_at\": null,\n        \"status\": \"SUBMITTED\",\n        \"type\": \"DROPOFF\",\n        \"pods\": [],\n        \"order_ids\": null,\n        \"estimated_arrival_time\": 1780331807000,\n        \"actual_arrival_time\": null,\n        \"deliver_after\": null,\n        \"deliver_before\": null,\n        \"tracking\": {\n          \"code\": null,\n          \"link\": \"https://deliver.metrobi.com/r/Y4VKH70JSKAS\"\n        },\n        \"webhook_url\": null,\n        \"price\": 21.86,\n        \"price_with_credit\": 38.51,\n        \"create_source\": null\n      },\n      \"driver\": null,\n      \"settings\": {\n        \"merge_delivery\": false,\n        \"return_to_pickup\": false\n      },\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"all_stops\": [\n        {\n          \"id\": null,\n          \"name\": \"Metrobi\",\n          \"address\": \"55 Court Street Boston MA 02108\",\n          \"tracking_code\": \"SZYLBHFF8JMA\",\n          \"lat\": 42.359308,\n          \"lng\": -71.058981,\n          \"address2\": null,\n          \"instructions\": null,\n          \"business_name\": null,\n          \"contact\": {\n            \"phone\": null,\n            \"email\": \"example@email.com\"\n          },\n          \"completed_at\": null,\n          \"status\": \"SUBMITTED\",\n          \"type\": \"PICKUP\",\n          \"pods\": [],\n          \"order_ids\": null,\n          \"estimated_arrival_time\": 1780329600000,\n          \"actual_arrival_time\": null,\n          \"deliver_after\": null,\n          \"deliver_before\": null,\n          \"tracking\": {\n            \"code\": null,\n            \"link\": \"https://deliver.metrobi.com/r/SZYLBHFF8JMA\"\n          },\n          \"webhook_url\": null,\n          \"price\": null,\n          \"price_with_credit\": null,\n          \"create_source\": \"DEFAULT\"\n        },\n        {\n          \"id\": null,\n          \"name\": \"John\",\n          \"address\": \"3 Cambridge Street Somerville, MA 02144\",\n          \"tracking_code\": \"Y4VKH70JSKAS\",\n          \"lat\": 42.4353033,\n          \"lng\": -71.1544177,\n          \"address2\": null,\n          \"instructions\": null,\n          \"business_name\": null,\n          \"contact\": {\n            \"phone\": \"+15551234567\",\n            \"email\": \"example2@email.com\"\n          },\n          \"completed_at\": null,\n          \"status\": \"SUBMITTED\",\n          \"type\": \"DROPOFF\",\n          \"pods\": [],\n          \"order_ids\": null,\n          \"estimated_arrival_time\": 1780331807000,\n          \"actual_arrival_time\": null,\n          \"deliver_after\": null,\n          \"deliver_before\": null,\n          \"tracking\": {\n            \"code\": null,\n            \"link\": \"https://deliver.metrobi.com/r/Y4VKH70JSKAS\"\n          },\n          \"webhook_url\": null,\n          \"price\": 21.86,\n          \"price_with_credit\": 38.51,\n          \"create_source\": null\n        }\n      ]\n    }\n  }\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    },
+                    "response": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Delivery estimation created"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "delivery_id": {},
+                            "size": {
+                              "type": "string",
+                              "example": "suv"
+                            },
+                            "price": {
+                              "type": "number",
+                              "example": 21.86,
+                              "default": 0
+                            },
+                            "price_with_credit": {
+                              "type": "number",
+                              "example": 38.51,
+                              "default": 0
+                            },
+                            "distance_estimate": {
+                              "type": "number",
+                              "example": 9.026656517,
+                              "default": 0
+                            },
+                            "job_description": {},
+                            "cancellation": {},
+                            "pickup_time": {
+                              "type": "object",
+                              "properties": {
+                                "date": {
+                                  "type": "string",
+                                  "example": "2026-06-01"
+                                },
+                                "time": {
+                                  "type": "string",
+                                  "example": "10:00"
+                                },
+                                "latest_date": {
+                                  "type": "string",
+                                  "example": "2026-06-01"
+                                },
+                                "latest_time": {
+                                  "type": "string",
+                                  "example": "12:00"
+                                }
+                              }
+                            },
+                            "pickup_stop": {
+                              "type": "object",
+                              "properties": {
+                                "id": {},
+                                "name": {
+                                  "type": "string",
+                                  "example": "Metrobi"
+                                },
+                                "address": {
+                                  "type": "string",
+                                  "example": "55 Court Street Boston MA 02108"
+                                },
+                                "tracking_code": {
+                                  "type": "string",
+                                  "example": "SZYLBHFF8JMA"
+                                },
+                                "lat": {
+                                  "type": "number",
+                                  "example": 42.359308,
+                                  "default": 0
+                                },
+                                "lng": {
+                                  "type": "number",
+                                  "example": -71.058981,
+                                  "default": 0
+                                },
+                                "address2": {},
+                                "instructions": {},
+                                "business_name": {},
+                                "completed_at": {},
+                                "status": {
+                                  "type": "string",
+                                  "example": "SUBMITTED"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "example": "PICKUP"
+                                },
+                                "pods": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {}
+                                  }
+                                },
+                                "order_ids": {},
+                                "estimated_arrival_time": {
+                                  "type": "integer",
+                                  "example": 1780329600000,
+                                  "default": 0
+                                },
+                                "actual_arrival_time": {},
+                                "deliver_after": {},
+                                "deliver_before": {},
+                                "tracking": {
+                                  "type": "object",
+                                  "properties": {
+                                    "code": {},
+                                    "link": {
+                                      "type": "string",
+                                      "example": "https://deliver.metrobi.com/r/SZYLBHFF8JMA"
+                                    }
+                                  }
+                                },
+                                "webhook_url": {},
+                                "price": {},
+                                "price_with_credit": {},
+                                "create_source": {
+                                  "type": "string",
+                                  "example": "DEFAULT"
+                                }
+                              }
+                            },
+                            "dropoff_stop": {
+                              "type": "object",
+                              "properties": {
+                                "id": {},
+                                "name": {
+                                  "type": "string",
+                                  "example": "John"
+                                },
+                                "address": {
+                                  "type": "string",
+                                  "example": "3 Cambridge Street Somerville, MA 02144"
+                                },
+                                "tracking_code": {
+                                  "type": "string",
+                                  "example": "Y4VKH70JSKAS"
+                                },
+                                "lat": {
+                                  "type": "number",
+                                  "example": 42.4353033,
+                                  "default": 0
+                                },
+                                "lng": {
+                                  "type": "number",
+                                  "example": -71.1544177,
+                                  "default": 0
+                                },
+                                "address2": {},
+                                "instructions": {},
+                                "business_name": {},
+                                "contact": {
+                                  "type": "object",
+                                  "properties": {
+                                    "phone": {
+                                      "type": "string",
+                                      "example": "+15551234567"
+                                    },
+                                    "email": {
+                                      "type": "string",
+                                      "example": "example2@email.com"
+                                    }
+                                  }
+                                },
+                                "completed_at": {},
+                                "status": {
+                                  "type": "string",
+                                  "example": "SUBMITTED"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "example": "DROPOFF"
+                                },
+                                "pods": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {}
+                                  }
+                                },
+                                "order_ids": {},
+                                "estimated_arrival_time": {
+                                  "type": "integer",
+                                  "example": 1780331807000,
+                                  "default": 0
+                                },
+                                "actual_arrival_time": {},
+                                "deliver_after": {},
+                                "deliver_before": {},
+                                "tracking": {
+                                  "type": "object",
+                                  "properties": {
+                                    "code": {},
+                                    "link": {
+                                      "type": "string",
+                                      "example": "https://deliver.metrobi.com/r/Y4VKH70JSKAS"
+                                    }
+                                  }
+                                },
+                                "webhook_url": {},
+                                "price": {
+                                  "type": "number",
+                                  "example": 21.86,
+                                  "default": 0
+                                },
+                                "price_with_credit": {
+                                  "type": "number",
+                                  "example": 38.51,
+                                  "default": 0
+                                },
+                                "create_source": {}
+                              }
+                            },
+                            "driver": {},
+                            "settings": {
+                              "type": "object",
+                              "properties": {
+                                "merge_delivery": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "default": true
+                                },
+                                "return_to_pickup": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "default": true
+                                }
+                              }
+                            },
+                            "created_at": {},
+                            "updated_at": {},
+                            "all_stops": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {},
+                                  "name": {
+                                    "type": "string",
+                                    "example": "Metrobi"
+                                  },
+                                  "address": {
+                                    "type": "string",
+                                    "example": "55 Court Street Boston MA 02108"
+                                  },
+                                  "tracking_code": {
+                                    "type": "string",
+                                    "example": "SZYLBHFF8JMA"
+                                  },
+                                  "lat": {
+                                    "type": "number",
+                                    "example": 42.359308,
+                                    "default": 0
+                                  },
+                                  "lng": {
+                                    "type": "number",
+                                    "example": -71.058981,
+                                    "default": 0
+                                  },
+                                  "address2": {},
+                                  "instructions": {},
+                                  "business_name": {},
+                                  "contact": {
+                                    "type": "object",
+                                    "properties": {
+                                      "phone": {},
+                                      "email": {
+                                        "type": "string",
+                                        "example": "example@email.com"
+                                      }
+                                    }
+                                  },
+                                  "completed_at": {},
+                                  "status": {
+                                    "type": "string",
+                                    "example": "SUBMITTED"
+                                  },
+                                  "type": {
+                                    "type": "string",
+                                    "example": "PICKUP"
+                                  },
+                                  "pods": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {}
+                                    }
+                                  },
+                                  "order_ids": {},
+                                  "estimated_arrival_time": {
+                                    "type": "integer",
+                                    "example": 1780329600000,
+                                    "default": 0
+                                  },
+                                  "actual_arrival_time": {},
+                                  "deliver_after": {},
+                                  "deliver_before": {},
+                                  "tracking": {
+                                    "type": "object",
+                                    "properties": {
+                                      "code": {},
+                                      "link": {
+                                        "type": "string",
+                                        "example": "https://deliver.metrobi.com/r/SZYLBHFF8JMA"
+                                      }
+                                    }
+                                  },
+                                  "webhook_url": {},
+                                  "price": {},
+                                  "price_with_credit": {},
+                                  "create_source": {
+                                    "type": "string",
+                                    "example": "DEFAULT"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\t\"response\": {\n\t\t\"message\": \"Failed when parsing body as json Error ID: None\"\n\t},\n\t\"success\": false\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Failed when parsing body as json Error ID: None"
+                        }
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "tags": [
+          "Deliveries"
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sec0": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  }
+}

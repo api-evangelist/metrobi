@@ -1,0 +1,29 @@
+generated: '2026-07-20'
+method: probed
+source: https://metrobi.com
+note: >-
+  metrobi.com is a WordPress site that returns HTTP 200 with the HTML homepage
+  (a soft-404) for every /.well-known/ path, so none of the probed documents are
+  real well-known resources. No genuine well-known discovery surface was found.
+host: https://metrobi.com
+documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    valid: false
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: text/html
+    valid: false
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: text/html
+    valid: false
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: text/html
+    valid: false
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    content_type: text/html
+    valid: false

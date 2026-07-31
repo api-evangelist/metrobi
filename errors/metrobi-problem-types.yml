@@ -1,0 +1,30 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/metrobi-delivery-api-openapi.json
+format: custom
+note: >-
+  Metrobi does not use RFC 9457 application/problem+json. Errors return HTTP 400
+  with a custom JSON envelope. Two shapes appear across operations:
+  {"success": false, "response": {"message": "..."}} (create, cancel, list) and
+  {"response": {"message": "...", "errorId": null}, "success": false} (cancel).
+envelope:
+  success: boolean
+  response:
+    message: string
+    errorId: "string|null (present on some operations)"
+problems:
+  - status: 400
+    title: Failed when parsing body as json
+    example_message: "Failed when parsing body as json Error ID: None"
+    source_operation: openapi/metrobi-delivery-api-openapi.json#create-a-delivery
+  - status: 400
+    title: Delivery not found
+    example_message: "Delivery not found"
+    source_operation: openapi/metrobi-delivery-api-openapi.json#cancel-a-delivery
+  - status: 400
+    title: Missing arguments
+    example_message: "Missing arguments"
+    source_operation: openapi/metrobi-delivery-api-openapi.json#list-deliveries
+  - status: 400
+    title: Bad request
+    source_operation: openapi/metrobi-delivery-api-openapi.json#get-a-delivery-status

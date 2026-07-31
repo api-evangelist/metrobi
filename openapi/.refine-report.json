@@ -1,0 +1,14 @@
+{
+  "provider": "metrobi",
+  "sources": [
+    "metrobi-deliveries-api-openapi.yml"
+  ],
+  "outputs": [
+    "metrobi-deliveries-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

@@ -1,0 +1,31 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/metrobi-delivery-api-openapi.json
+standards:
+  - id: openapi-3.1
+    conforms: true
+    evidence: spec is OpenAPI 3.1.0
+  - id: api-key-auth
+    conforms: true
+    evidence: securitySchemes sec0 type apiKey in header (x-api-key)
+  - id: oauth2
+    conforms: false
+    evidence: no oauth2 security scheme declared
+  - id: openid-connect
+    conforms: false
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      errors use a custom envelope {success:false, response:{message}} with
+      application/json, not application/problem+json
+  - id: webhooks
+    conforms: true
+    evidence: >-
+      per-delivery webhook_url receives HTTP POST delivery-event callbacks
+      (documented at metrobi.readme.io/reference/receiving-real-time-delivery-updates)
+  - id: cursor-pagination
+    conforms: false
+    evidence: list-deliveries filters by date range (fromDate/toDate), no cursor/offset paging
+  - id: idempotency
+    conforms: false
+    evidence: no idempotency key header/parameter documented

@@ -1,0 +1,31 @@
+generated: '2026-07-20'
+method: searched
+source: https://metrobi.readme.io/reference/receiving-real-time-delivery-updates
+spec_type: Webhooks
+note: >-
+  Metrobi does not publish an AsyncAPI document. Delivery status events are
+  delivered as HTTP POST callbacks to a per-delivery webhook_url that the caller
+  supplies when creating a delivery. Captured here as a webhook catalog.
+subscriber_requirements:
+  - Publicly accessible HTTPS URL
+  - URL must accept POST requests
+  - URL must return a 2xx response
+delivery:
+  transport: http-post
+  configured_via: webhook_url (create-a-delivery request body)
+  payload: >-
+    Full delivery JSON object (same shape as the read-a-delivery response),
+    documented at metrobi.readme.io/reference/reading-data-from-each-delivery-event
+events:
+  - name: dropoff.in_progress
+    trigger: a dropoff stop becomes in progress
+    stop_status: INPROGRESS
+  - name: dropoff.completed
+    trigger: a dropoff stop is completed
+    stop_status: COMPLETED
+  - name: dropoff.cancelled
+    trigger: a dropoff stop is cancelled
+    stop_status: CANCELLED
+notes:
+  - Only dropoff-stop status changes trigger events; pickup-stop changes do not.
+  - Completed dropoff payloads include proof-of-delivery photos (pods) and driver info.

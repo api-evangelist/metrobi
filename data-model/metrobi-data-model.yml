@@ -1,0 +1,78 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/metrobi-delivery-api-openapi.json
+note: >-
+  Entity graph derived from the Metrobi Delivery API request/response schemas.
+  A delivery has exactly one pickup stop and up to 50 dropoff stops; all stops
+  are also enumerated in all_stops.
+entities:
+  - name: Delivery
+    id: delivery_id
+    id_format: UUID
+    fields: [size, price, price_with_credit, distance_estimate, job_description,
+             cancellation, pickup_time, created_at, updated_at, driver, settings, webhook_url]
+  - name: Stop
+    id: id
+    id_format: UUID
+    types: [PICKUP, DROPOFF, RETURN]
+    statuses: [SUBMITTED, TODO, INPROGRESS, COMPLETED, CANCELLED]
+    fields: [name, address, address2, lat, lng, instructions, business_name,
+             tracking_code, completed_at, estimated_arrival_time, actual_arrival_time,
+             deliver_after, deliver_before, create_source]
+  - name: Contact
+    fields: [phone, email]
+  - name: Driver
+    fields: [name, phone]
+  - name: ProofOfDelivery
+    alias: pod
+    fields: [type, image, imageType, confirmedType, source, status, updatedAt]
+  - name: Tracking
+    fields: [code, link]
+  - name: Cancellation
+    fields: [reason, fee]
+  - name: PickupTime
+    fields: [date, time, latest_date, latest_time]
+  - name: Settings
+    fields: [merge_delivery, return_to_pickup, self_managed, merge_delivery_settings]
+relationships:
+  - from: Delivery
+    to: Stop
+    kind: has_one
+    via: pickup_stop
+  - from: Delivery
+    to: Stop
+    kind: has_one
+    via: dropoff_stop
+    note: up to 50 dropoffs across a delivery (see all_stops)
+  - from: Delivery
+    to: Stop
+    kind: has_many
+    via: all_stops
+  - from: Delivery
+    to: Driver
+    kind: has_one
+    via: driver
+  - from: Delivery
+    to: Cancellation
+    kind: has_one
+    via: cancellation
+  - from: Delivery
+    to: PickupTime
+    kind: has_one
+    via: pickup_time
+  - from: Delivery
+    to: Settings
+    kind: has_one
+    via: settings
+  - from: Stop
+    to: Contact
+    kind: has_one
+    via: contact
+  - from: Stop
+    to: ProofOfDelivery
+    kind: has_many
+    via: pods
+  - from: Stop
+    to: Tracking
+    kind: has_one
+    via: tracking

@@ -1,0 +1,43 @@
+generated: '2026-07-20'
+method: searched
+source: https://metrobi.readme.io/reference/what-is-metrobi
+authentication:
+  style: api-key
+  location: header
+  parameter: x-api-key
+  docs: https://metrobi.readme.io/reference/authentication
+  note: API key generated in the Metrobi sender dashboard after creating an account.
+idempotency:
+  supported: false
+  note: no idempotency key header/parameter is documented
+pagination:
+  style: date-range-filter
+  params: [fromDate, toDate]
+  format: "YYYY-MM-DD"
+  note: >-
+    list-deliveries filters by pickup-time date range only; there is no cursor,
+    offset, or page-token paging and no total-count/next-page response fields.
+versioning:
+  style: uri-path
+  current: v1
+error_envelope:
+  format: custom
+  shape: '{"success": false, "response": {"message": "..."}}'
+  ref: errors/metrobi-problem-types.yml
+events:
+  style: per-request-webhook
+  mechanism: >-
+    Supply a webhook_url when creating a delivery; Metrobi POSTs the full delivery
+    JSON to it on dropoff status changes (in-progress, completed, cancelled).
+  requirements: [publicly accessible HTTPS URL, accepts POST, returns 2xx]
+  ref: asyncapi/metrobi-delivery-webhooks.yml
+rate_limiting:
+  documented: false
+  note: no rate-limit headers or quota policy documented
+identifiers:
+  delivery_id: UUID
+  stop_id: UUID
+  tracking_code: short alphanumeric code (used in receiver tracking links)
+timestamps:
+  format: epoch-milliseconds
+  fields: [created_at, updated_at, completed_at, estimated_arrival_time, actual_arrival_time]

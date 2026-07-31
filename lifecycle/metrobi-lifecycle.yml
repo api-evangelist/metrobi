@@ -1,0 +1,22 @@
+generated: '2026-07-20'
+method: searched
+source: https://metrobi.readme.io/reference/what-is-metrobi
+versioning:
+  scheme: uri-path
+  current: v1
+  docs: https://metrobi.readme.io/reference/what-is-metrobi
+  note: >-
+    Public paths are versioned under /v1/ (e.g. /api/v1/delivery). The live API
+    root (https://delivery-api.metrobi.com/) reports an internal build version
+    "Metrobi Api v3.0.575".
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: no deprecation policy or RFC 8594 Sunset/Deprecation header support documented
+sla:
+  url: null
+status_page: null
+note: >-
+  No public status page (status.metrobi.com does not resolve) and no dated
+  changelog / release notes were found on the docs (metrobi.readme.io).
+deprecated_operations: []
