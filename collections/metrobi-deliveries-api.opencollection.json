@@ -1,0 +1,131 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metrobi Delivery Deliveries API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Deliveries",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List deliveries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://delivery-api.metrobi.com/api/v1/delivery",
+            "params": [
+              {
+                "name": "fromDate",
+                "value": "",
+                "type": "query",
+                "description": "The starting date of the range (inclusive). This parameter filters deliveries to include only those with a pickup time on or after the specified date. Format: YYYY-MM-DD"
+              },
+              {
+                "name": "toDate",
+                "value": "",
+                "type": "query",
+                "description": "The ending date of the range (inclusive). This parameter filters deliveries to include only those with a pickup time on or before the specified date. Format: YYYY-MM-DD"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "List deliveries"
+        },
+        {
+          "info": {
+            "name": "Create a delivery",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://delivery-api.metrobi.com/api/v1/delivery",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a delivery"
+        },
+        {
+          "info": {
+            "name": "Read a delivery",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://delivery-api.metrobi.com/api/v1/delivery/:delivery_id",
+            "params": [
+              {
+                "name": "delivery_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the delivery to be read"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Read a delivery"
+        },
+        {
+          "info": {
+            "name": "Cancel a delivery",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://delivery-api.metrobi.com/api/v1/delivery/:delivery_id",
+            "params": [
+              {
+                "name": "delivery_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the delivery to be canceled"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Cancel a delivery"
+        },
+        {
+          "info": {
+            "name": "Get delivery estimation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://delivery-api.metrobi.com/api/v1/delivery_estimate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get delivery estimation"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

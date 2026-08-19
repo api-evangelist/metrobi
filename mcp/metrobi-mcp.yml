@@ -2,26 +2,32 @@ generated: '2026-07-20'
 method: derived
 status: candidate
 source: openapi/metrobi-delivery-api-openapi.json
-note: >-
-  No official hosted/remote MCP server was found for Metrobi (searched docs,
-  the @modelcontextprotocol npm scope, and MCP registries). This is a candidate
-  tool list derived one-to-one from the published Metrobi Delivery API operations.
+note: No official hosted/remote MCP server was found for Metrobi (searched docs, the @modelcontextprotocol
+  npm scope, and MCP registries). This is a candidate tool list derived one-to-one from the published
+  Metrobi Delivery API operations.
 server:
   name: metrobi
   transport: http
 tools:
-  - name: create_delivery
-    description: Create a local same-day courier delivery (pickup + dropoff, cargo size, pickup time, optional webhook_url).
-    source_operation: openapi/metrobi-delivery-api-openapi.json#create-a-delivery
-  - name: get_delivery_estimation
-    description: Get a price and distance estimate for a delivery before creating it.
-    source_operation: openapi/metrobi-delivery-api-openapi.json#delivery-estimation
-  - name: get_delivery
-    description: Read a single delivery and its current status by delivery_id.
-    source_operation: openapi/metrobi-delivery-api-openapi.json#get-a-delivery-status
-  - name: list_deliveries
-    description: List deliveries filtered by pickup-time date range (fromDate/toDate).
-    source_operation: openapi/metrobi-delivery-api-openapi.json#list-deliveries
-  - name: cancel_delivery
-    description: Cancel a delivery by delivery_id with a cancellation reason.
-    source_operation: openapi/metrobi-delivery-api-openapi.json#cancel-a-delivery
+- name: create_delivery
+  description: Create a local same-day courier delivery (pickup + dropoff, cargo size, pickup time, optional
+    webhook_url).
+  source_operation: openapi/metrobi-delivery-api-openapi.json#create-a-delivery
+- name: get_delivery_estimation
+  description: Get a price and distance estimate for a delivery before creating it.
+  source_operation: openapi/metrobi-delivery-api-openapi.json#delivery-estimation
+- name: get_delivery
+  description: Read a single delivery and its current status by delivery_id.
+  source_operation: openapi/metrobi-delivery-api-openapi.json#get-a-delivery-status
+- name: list_deliveries
+  description: List deliveries filtered by pickup-time date range (fromDate/toDate).
+  source_operation: openapi/metrobi-delivery-api-openapi.json#list-deliveries
+- name: cancel_delivery
+  description: Cancel a delivery by delivery_id with a cancellation reason.
+  source_operation: openapi/metrobi-delivery-api-openapi.json#cancel-a-delivery
+deployment:
+  mode: none
+  verified: derived
+  tools: 5
+  checked: '2026-08-12'
+  source: catalog MCP census
