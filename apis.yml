@@ -86,6 +86,9 @@ apis:
   - type: APIReference
     url: https://metrobi.readme.io/reference/what-is-metrobi
 common:
+- type: CapabilityMap
+  url: capabilities/metrobi-capability-edges.yml
+  name: Metrobi Business Capability Map
 - type: DeveloperPortal
   url: https://metrobi.com/integrations/delivery-api/
 - type: Documentation
