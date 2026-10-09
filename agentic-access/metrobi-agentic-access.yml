@@ -1,17 +1,17 @@
-generated: '2026-07-20'
+generated: '2026-09-23'
 method: generated
-source: openapi/metrobi-delivery-api-openapi.json
+source: openapi/metrobi-deliveries-api-openapi.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.
 summary:
   operations: 5
   by_action_class:
-    acting: 3
-    connected: 2
+    acting: 2
+    connected: 3
   by_consequence:
-    write: 3
-    read: 2
+    write: 2
+    read: 3
   human_in_the_loop_required: 0
 operations:
 - path: /v1/delivery
@@ -70,15 +70,9 @@ operations:
   method: post
   operationId: delivery-estimation
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
